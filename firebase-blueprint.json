@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Submission": {
+      "title": "Submission",
+      "description": "A participant's response to the TRUSTEX social experiment.",
+      "type": "object",
+      "properties": {
+        "full_name": { "type": "string", "description": "Full name of the participant" },
+        "directed_to": { "type": "string", "description": "The person the experiment is directed to" },
+        "reason": { "type": "string", "description": "Reason for participation" },
+        "q1": { "type": "string", "description": "Trust definition" },
+        "q2": { "type": "string", "description": "Security factors" },
+        "q3": { "type": "string", "description": "Reaction to strangers" },
+        "q4": { "type": "string", "description": "Experience with fraud" },
+        "q5": { "type": "string", "description": "True personalities online" },
+        "q6": { "type": "string", "description": "Biggest risks" },
+        "q7": { "type": "string", "description": "Technology impact" },
+        "q8": { "type": "string", "description": "Advice for others" },
+        "created_at": { "type": "string", "format": "date-time", "description": "Submission timestamp" },
+        "has_experienced_scam": { "type": "boolean", "description": "Whether the participant has experienced scams (derived from q4)" }
+      },
+      "required": ["full_name", "directed_to", "reason", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "created_at"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Admin user profile.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin"] }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/submissions/{submissionId}": {
+      "schema": "Submission",
+      "description": "Collection of experiment submissions"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Admin user profiles"
+    }
+  }
+}

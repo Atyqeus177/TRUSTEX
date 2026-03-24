@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (request.auth.token.email == "atyq379@gmail.com" && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isValidSubmission(data) {
+      return data.full_name is string && data.full_name.size() > 0 && data.full_name.size() < 200 &&
+             data.directed_to is string && data.directed_to.size() > 0 &&
+             data.reason is string && data.reason.size() > 0 &&
+             data.q1 is string && data.q2 is string && data.q3 is string &&
+             data.q4 is string && data.q5 is string && data.q6 is string &&
+             data.q7 is string && data.q8 is string &&
+             data.created_at is string;
+    }
+
+    match /submissions/{submissionId} {
+      allow create: if isValidSubmission(request.resource.data);
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+  }
+}
